@@ -69,4 +69,10 @@ public class GameController : MonoBehaviour
         isRunning= !isRunning;
     }
 
+    public void NextTick()
+    {
+        if (container == null) FindGrid();
+        UpdateGameState(container.StoredGrid);
+    }
+
 }
