@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI; 
 
 public class GameController : MonoBehaviour
 {
@@ -10,10 +11,12 @@ public class GameController : MonoBehaviour
     [SerializeField] float itterationSpeed = 0.05f;
     float itterationTimer = 1f;
     [SerializeField] private GridContainer container;
+    [SerializeField] private Slider emulationSpeedSlider;
 
     private void Update()
     {
         if (!isRunning) { return; }
+        if (emulationSpeedSlider != null) { itterationSpeed = emulationSpeedSlider.value; }
 
         itterationTimer -= Time.deltaTime;
 
