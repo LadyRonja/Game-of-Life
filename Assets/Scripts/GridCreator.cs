@@ -14,6 +14,7 @@ public class GridCreator : MonoBehaviour
     public float offSet;
     public float padding;
     public Transform startPosition;
+    public bool gridWrap = true;
 
 
     private void Start()
@@ -53,7 +54,7 @@ public class GridCreator : MonoBehaviour
 
                 tileObj.transform.name = $"{x}, {y}";
                 tileScr.myPos = new Vector2Int(x, y);
-                tileScr.shouldBeAlive= true;
+                tileScr.shouldBeAlive = false;
                 tileScr.UpdateStatus();
                 
                 container.StoredGrid[x, y] = tileScr;
@@ -67,10 +68,6 @@ public class GridCreator : MonoBehaviour
             RandomizeGrid(container.StoredGrid);
         }
 
-        /*foreach (GridTile tile in container.StoredGrid)
-        {
-            tile.UpdateStatus();
-        }*/
     }
 
     private void ConnectNeighbour(GridTile[,] grid)
@@ -82,31 +79,52 @@ public class GridCreator : MonoBehaviour
         {
             for (int x = 0; x < xMax; x++)
             {
+                // South
                 if (y != 0)
                 {
                     grid[x, y].neighbourSouth = grid[x, y - 1];
                     grid[x, y].neighbours.Add(grid[x, y].neighbourSouth);
                 }
+                else if(gridWrap)
+                {
+                    grid[x, y].neighbourSouth = grid[x, yMax - 1];
+                    grid[x, y].neighbours.Add(grid[x, y].neighbourSouth);
+                }
 
+                // North
                 if(y != yMax - 1)
                 {
                     grid[x, y].neighbourNorth = grid[x, y + 1];
                     grid[x, y].neighbours.Add(grid[x, y].neighbourNorth);
-
+                }
+                else if (gridWrap)
+                {
+                    grid[x, y].neighbourNorth = grid[x, 0];
+                    grid[x, y].neighbours.Add(grid[x, y].neighbourNorth);
                 }
 
+                // West
                 if (x != 0)
                 {
                     grid[x, y].neighbourWest = grid[x - 1, y];
                     grid[x, y].neighbours.Add(grid[x, y].neighbourWest);
-
+                }
+                else if (gridWrap)
+                {
+                    grid[x, y].neighbourWest = grid[xMax - 1, y];
+                    grid[x, y].neighbours.Add(grid[x, y].neighbourWest);
                 }
 
+                // East
                 if (x != xMax - 1)
                 {
                     grid[x, y].neighbourEast = grid[x + 1, y];
                     grid[x, y].neighbours.Add(grid[x, y].neighbourEast);
-
+                }
+                else if (gridWrap)
+                {
+                    grid[x, y].neighbourEast = grid[0, y];
+                    grid[x, y].neighbours.Add(grid[x, y].neighbourEast);
                 }
 
             }
@@ -144,8 +162,13 @@ public class GridCreator : MonoBehaviour
             if (random < deadOnSpawn)
             {
                 tile.shouldBeAlive = false;
-                tile.UpdateStatus();
             }
+            else
+            {
+                tile.shouldBeAlive = true;
+            }
+
+            tile.UpdateStatus();
         }
     }
 }
