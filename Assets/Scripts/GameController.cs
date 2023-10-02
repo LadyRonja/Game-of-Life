@@ -1,22 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI; 
 
 public class GameController : MonoBehaviour
 {
-    public bool isRunning = false;
+    public static GameController Instance;
+
+    private bool isRunning = false;
+    public bool IsRunning { get => isRunning; }
     [SerializeField] float itterationSpeed = 0.05f;
     float itterationTimer = 1f;
     [SerializeField] private GridContainer container;
-    [SerializeField] private Slider emulationSpeedSlider;
 
+
+    private void Awake()
+    {
+        #region Singleton
+        if (Instance == null) Instance = this;
+        else Destroy(this.gameObject);
+        #endregion
+    }
     private void Update()
     {
         if (!isRunning) { return; }
-        if (emulationSpeedSlider != null) { itterationSpeed = emulationSpeedSlider.value; }
 
         itterationTimer -= Time.deltaTime;
 
@@ -72,10 +76,42 @@ public class GameController : MonoBehaviour
         isRunning= !isRunning;
     }
 
+    public void ToggleIsRunning(out bool running)
+    {
+        ToggleIsRunning();
+        running = isRunning;
+    }
+
     public void NextTick()
     {
         if (container == null) FindGrid();
         UpdateGameState(container.StoredGrid);
     }
 
+    public void KillAll()
+    {
+        if(container == null) container = GameObject.Find("Generated Grid").GetComponent<GridContainer>();
+        foreach (GridTile tile in container.StoredGrid)
+        {
+            tile.ForceKill();
+        }
+    }
+
+    public void SetEmulationSpeed(float speed)
+    {
+        itterationSpeed = speed;
+    }
+
+    public void RandomizeAlive(float percentageAlive)
+    {
+        KillAll();
+        foreach (GridTile tile in container.StoredGrid)
+        {
+            if (Random.Range(0, 100) < percentageAlive)
+            {
+                tile.shouldBeAlive= true;
+                tile.UpdateStatus();
+            }
+        }
+    }
 }

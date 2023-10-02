@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class GridTile : MonoBehaviour, IPointerDownHandler
+public class GridTile : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
 {
     public Vector2Int myPos;
 
@@ -38,9 +39,26 @@ public class GridTile : MonoBehaviour, IPointerDownHandler
         }
     }
 
+
+
     public void OnPointerDown(PointerEventData eventData)
     {
         shouldBeAlive = !shouldBeAlive;
         UpdateStatus();         
+    }
+
+    public void ForceKill()
+    {
+        shouldBeAlive = false;
+        isAlive = false;
+        mySpriteRenderer.color = Color.black;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!Input.GetMouseButton((int)MouseButton.Left)) return;
+
+        shouldBeAlive = !shouldBeAlive;
+        UpdateStatus();
     }
 }
