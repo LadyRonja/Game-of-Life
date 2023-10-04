@@ -43,22 +43,23 @@ public class GridTile : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        shouldBeAlive = !shouldBeAlive;
-        UpdateStatus();         
-    }
-
-    public void ForceKill()
-    {
-        shouldBeAlive = false;
-        isAlive = false;
-        mySpriteRenderer.color = Color.black;
+        GridClicker.Instance.OnClickDownDraw(myPos);      
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (!Input.GetMouseButton((int)MouseButton.Left)) return;
 
-        shouldBeAlive = !shouldBeAlive;
-        UpdateStatus();
+        GridClicker.Instance.OnClickDraw(myPos);
+    }
+
+    public void ForceState(bool forceAlive)
+    {
+        shouldBeAlive = forceAlive;
+        isAlive = forceAlive;
+        if (forceAlive)
+            mySpriteRenderer.color = Color.white;
+        else
+            mySpriteRenderer.color = Color.black;
     }
 }

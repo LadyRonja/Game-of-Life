@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -8,8 +9,19 @@ public class GameController : MonoBehaviour
     public bool IsRunning { get => isRunning; }
     [SerializeField] float itterationSpeed = 0.05f;
     float itterationTimer = 1f;
-    [SerializeField] private GridContainer container;
+    private GridContainer container;
+    public GridContainer Container { 
+        get { 
+            if(container == null)
+                FindGrid();
+            return container; 
+        }
+        set { 
+            container = value; 
+        } 
+    }
 
+    [SerializeField] GridCreator gridCreatorPrefab;
 
     private void Awake()
     {
@@ -18,6 +30,7 @@ public class GameController : MonoBehaviour
         else Destroy(this.gameObject);
         #endregion
     }
+
     private void Update()
     {
         if (!isRunning) { return; }
@@ -90,10 +103,10 @@ public class GameController : MonoBehaviour
 
     public void KillAll()
     {
-        if(container == null) container = GameObject.Find("Generated Grid").GetComponent<GridContainer>();
+        if (container == null) FindGrid();
         foreach (GridTile tile in container.StoredGrid)
         {
-            tile.ForceKill();
+            tile.ForceState(false);
         }
     }
 
@@ -107,7 +120,7 @@ public class GameController : MonoBehaviour
         KillAll();
         foreach (GridTile tile in container.StoredGrid)
         {
-            if (Random.Range(0, 100) < percentageAlive)
+            if (UnityEngine.Random.Range(0, 100) < percentageAlive)
             {
                 tile.shouldBeAlive= true;
                 tile.UpdateStatus();

@@ -48,7 +48,7 @@ public class GridCreator : MonoBehaviour
             for (int x = 0; x < width; x++)
             {
                 Vector3 startPos = startPosition.position;
-                Vector3 targetPos = new Vector3(startPos.x + offSet * x, startPos.y + offSet * y , 0);
+                Vector3 targetPos = new Vector3(startPos.x + (offSet + padding) * x, startPos.y + (offSet + padding) * y , 0);
                 GameObject tileObj = Instantiate(tilePrefab, targetPos, Quaternion.identity, parent.transform);
                 GridTile tileScr = tileObj.GetComponent<GridTile>();
 
