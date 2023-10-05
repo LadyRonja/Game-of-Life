@@ -22,6 +22,10 @@ public class UIController : MonoBehaviour
     [Space]
     [SerializeField] TMP_Dropdown drawStyleOptionsDropDown;
     [SerializeField] TMP_Dropdown shapesOptionsDropDown;
+    [SerializeField] TMP_Dropdown rotationOptionsDropDown;
+    [Space]
+    [SerializeField] Toggle flipXToggle;
+    [SerializeField] Toggle flipYToggle;
 
     private void Start()
     {
@@ -33,6 +37,7 @@ public class UIController : MonoBehaviour
 
         PopulateDrawStyleDropDown();
         PopulateShapesDropDown();
+        PopulateRotationDropDown();
     }
 
     public void ToggleRunning()
@@ -96,12 +101,26 @@ public class UIController : MonoBehaviour
     public void SetShapeToDraw()
     {
         int modeIndex = shapesOptionsDropDown.value;
-        ShapeStorage.Shapes shapeToDraw = (ShapeStorage.Shapes)Enum.ToObject(typeof(ShapeStorage.Shapes), modeIndex);
+        ShapeFactory.Shapes shapeToDraw = (ShapeFactory.Shapes)Enum.ToObject(typeof(ShapeFactory.Shapes), modeIndex);
 
         GridClicker.Instance.shapeToDraw = shapeToDraw;
     }
 
-    public void PopulateDrawStyleDropDown()
+    public void SetShapeRotation()
+    {
+        int modeIndex = rotationOptionsDropDown.value;
+        ShapeFactory.Rotation rotationOfShape = (ShapeFactory.Rotation)Enum.ToObject(typeof(ShapeFactory.Rotation), modeIndex);
+
+        GridClicker.Instance.shapeRotation = rotationOfShape;
+    }
+
+    public void SetFlipAxis()
+    {
+        GridClicker.Instance.flipShapeOnAxisX = flipXToggle.isOn;
+        GridClicker.Instance.flipShapeOnAxisY = flipYToggle.isOn;
+    }
+
+    private void PopulateDrawStyleDropDown()
     {
         List<TMP_Dropdown.OptionData> drawStyleOptions = new();
         string[] drawStyles = Enum.GetNames(typeof(GridClicker.DrawMode));
@@ -116,11 +135,10 @@ public class UIController : MonoBehaviour
         drawStyleOptionsDropDown.options = drawStyleOptions;
     }
 
-
-    public void PopulateShapesDropDown()
+    private void PopulateShapesDropDown()
     {
         List<TMP_Dropdown.OptionData> shapeOptions = new();
-        string[] shapes = Enum.GetNames(typeof(ShapeStorage.Shapes));
+        string[] shapes = Enum.GetNames(typeof(ShapeFactory.Shapes));
 
         for (int i = 0; i < shapes.Length; i++)
         {
@@ -130,6 +148,21 @@ public class UIController : MonoBehaviour
         }
 
         shapesOptionsDropDown.options = shapeOptions;
+    }
+
+    private void PopulateRotationDropDown()
+    {
+        List<TMP_Dropdown.OptionData> rotationOptions = new();
+        string[] rotations = Enum.GetNames(typeof(ShapeFactory.Rotation));
+
+        for (int i = 0; i < rotations.Length; i++)
+        {
+            TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
+            option.text = rotations[i];
+            rotationOptions.Add(option);
+        }
+
+        rotationOptionsDropDown.options = rotationOptions;
     }
 
 }

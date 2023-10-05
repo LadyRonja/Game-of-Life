@@ -11,8 +11,8 @@ public class GridClicker : MonoBehaviour
     public DrawMode currentDrawMode = DrawMode.Free;
 
     [Header("Shapes")]
-    public ShapeStorage.Shapes shapeToDraw = ShapeStorage.Shapes.Glider;
-    public ShapeStorage.Rotation shapeRotation = ShapeStorage.Rotation.Deg0;
+    public ShapeFactory.Shapes shapeToDraw = ShapeFactory.Shapes.Glider;
+    public ShapeFactory.Rotation shapeRotation = ShapeFactory.Rotation.Deg0;
     public bool flipShapeOnAxisX;
     public bool flipShapeOnAxisY;
 
@@ -82,12 +82,15 @@ public class GridClicker : MonoBehaviour
     private void DrawShape(Vector2Int startPos)
     {
         GridTile[,] grid = GameController.Instance.Container.StoredGrid;
-        int[,] shape = ShapeStorage.GetShape(shapeToDraw, shapeRotation);
+        int[,] shape = ShapeFactory.GetShape(shapeToDraw, shapeRotation);
         int xMax = grid.GetLength(0);
         int yMax = grid.GetLength(1);
 
         if (startPos.x + shape.GetLength(0) > xMax - 1 || startPos.y + shape.GetLength(1) > yMax - 1) 
             return;
+
+        if (flipShapeOnAxisX) shape = ShapeFactory.FlipMatrixOnXAxis(shape);
+        if (flipShapeOnAxisY) shape = ShapeFactory.FlipMatrixOnYAxis(shape);
 
         for (int y = 0; y < shape.GetLength(1); y++)
         {
@@ -96,6 +99,7 @@ public class GridClicker : MonoBehaviour
                 grid[startPos.x + x, startPos.y + y].ForceState(Convert.ToBoolean(shape[x, y]));
             }
         }
+
 
     }
 

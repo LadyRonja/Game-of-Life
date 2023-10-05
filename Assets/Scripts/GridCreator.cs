@@ -23,17 +23,6 @@ public class GridCreator : MonoBehaviour
             GenerateEmptyGrid(dimensions.x, dimensions.y, randomizeAlive);
     }
 
-    private void Update()
-    {
-        #region ForDebuggin
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-           Destroy(GameObject.Find("Generated Grid"));
-           GenerateEmptyGrid(dimensions.x, dimensions.y, randomizeAlive);
-        }
-        #endregion
-    }
-
 
     public void GenerateEmptyGrid(int width, int heigth, bool randomize)
     {
