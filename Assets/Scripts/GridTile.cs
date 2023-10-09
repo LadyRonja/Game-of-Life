@@ -23,23 +23,53 @@ public class GridTile : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
     public bool IsAlive { get => isAlive; }
     public bool shouldBeAlive = true;
 
+    public PvPController.Teams myTeam = PvPController.Teams.None;
+    public PvPController.Teams teamToJoin = PvPController.Teams.None;
+
+    Dictionary<PvPController.Teams, Color> teamColors = new()
+    {
+        { PvPController.Teams.None, Color.white},
+        { PvPController.Teams.P1, Color.blue},
+        { PvPController.Teams.P2, Color.red},
+    };
+
     [SerializeField] SpriteRenderer mySpriteRenderer;
 
     public void UpdateStatus()
     {
+        myTeam = teamToJoin;
+
         if (shouldBeAlive)
         {
             isAlive = true;
-            mySpriteRenderer.color = Color.white;
+            mySpriteRenderer.color = GetTeamColor();
         }
         else
         {
             isAlive = false;
-            mySpriteRenderer.color = Color.black;
+            mySpriteRenderer.color = GetTeamColor();
         }
+
     }
 
-
+    private Color GetTeamColor()
+    {
+        if (isAlive)
+        {
+            if (teamColors.TryGetValue(myTeam, out Color colorToBe))
+                return colorToBe;
+            else
+            {
+                Debug.LogError("Failed to get teamcolor from dictionary, teams not added?");
+                Debug.Log("Setting Color to white");
+                return Color.white;
+            }
+        }
+        else
+        {
+            return Color.black;
+        }
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -57,9 +87,13 @@ public class GridTile : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
     {
         shouldBeAlive = forceAlive;
         isAlive = forceAlive;
-        if (forceAlive)
-            mySpriteRenderer.color = Color.white;
-        else
-            mySpriteRenderer.color = Color.black;
+        mySpriteRenderer.color = GetTeamColor();
+    }
+
+    public void ForceState(bool forceAlive, PvPController.Teams forceTeam)
+    {
+        myTeam = forceTeam;
+        teamToJoin = forceTeam;
+        ForceState(forceAlive);
     }
 }

@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
 
     private bool isRunning = false;
     public bool IsRunning { get => isRunning; }
+    public bool playingPvP = false;
     [SerializeField] float itterationSpeed = 0.05f;
     float itterationTimer = 1f;
     private GridContainer container;
@@ -51,6 +52,7 @@ public class GameController : MonoBehaviour
             for (int x = 0; x < grid.GetLength(0); x++)
             {
                 int aliveNeighbours = 0;
+
                 foreach (GridTile neighbour in grid[x,y].neighbours)
                 {
                     if (neighbour == null) continue;
@@ -68,6 +70,14 @@ public class GameController : MonoBehaviour
                 else
                     if (aliveNeighbours == 3)
                         grid[x, y].shouldBeAlive = true;
+            }
+        }
+
+        if (playingPvP)
+        {
+            foreach (GridTile tile in grid)
+            {
+                PvPController.Instance.DetermineTileTeam(tile);
             }
         }
 
@@ -106,7 +116,7 @@ public class GameController : MonoBehaviour
         if (container == null) FindGrid();
         foreach (GridTile tile in container.StoredGrid)
         {
-            tile.ForceState(false);
+            tile.ForceState(false, PvPController.Teams.None);
         }
     }
 

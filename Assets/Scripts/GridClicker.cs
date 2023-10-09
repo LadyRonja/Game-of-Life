@@ -16,6 +16,9 @@ public class GridClicker : MonoBehaviour
     public bool flipShapeOnAxisX;
     public bool flipShapeOnAxisY;
 
+    [Header("Teams")]
+    public PvPController.Teams teamToDraw = PvPController.Teams.None;
+
     private void Awake()
     {
         #region Singleton
@@ -76,6 +79,7 @@ public class GridClicker : MonoBehaviour
     {
         GridTile tileToEdit = GameController.Instance.Container.StoredGrid[startPos.x, startPos.y];
         tileToEdit.shouldBeAlive = !tileToEdit.shouldBeAlive;
+        tileToEdit.teamToJoin = teamToDraw;
         tileToEdit.UpdateStatus();
     }
 
@@ -96,17 +100,19 @@ public class GridClicker : MonoBehaviour
         {
             for (int x = 0; x < shape.GetLength(0); x++)
             {
-                if (shape[x,y] == 1) // Allow overlapping with existing shapes
-                    grid[startPos.x + x, startPos.y + y].ForceState(Convert.ToBoolean(shape[x, y]));
+                // Allow overlapping with existing shapes
+                if (shape[x, y] == 1)
+                {  
+                    GridTile tileToMod = grid[startPos.x + x, startPos.y + y];
+                    tileToMod.ForceState(Convert.ToBoolean(shape[x, y]), teamToDraw);
+                }
             }
         }
-
-
     }
 
     private void ForceState(Vector2Int startPos, bool forceAlive)
     {
-        GameController.Instance.Container.StoredGrid[startPos.x, startPos.y].ForceState(forceAlive);
+        GameController.Instance.Container.StoredGrid[startPos.x, startPos.y].ForceState(forceAlive, teamToDraw);
     }
 
 }
