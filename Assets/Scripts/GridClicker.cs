@@ -96,7 +96,8 @@ public class GridClicker : MonoBehaviour
         {
             for (int x = 0; x < shape.GetLength(0); x++)
             {
-                grid[startPos.x + x, startPos.y + y].ForceState(Convert.ToBoolean(shape[x, y]));
+                if (shape[x,y] == 1) // Allow overlapping with existing shapes
+                    grid[startPos.x + x, startPos.y + y].ForceState(Convert.ToBoolean(shape[x, y]));
             }
         }
 
