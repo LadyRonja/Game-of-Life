@@ -148,6 +148,7 @@ public class GridCreator : MonoBehaviour
         foreach (GridTile tile in grid)
         {
             int random = Random.Range(0, 100);
+            int randTeam = Random.Range(0, 2);
             if (random < deadOnSpawn)
             {
                 tile.shouldBeAlive = false;
@@ -155,6 +156,8 @@ public class GridCreator : MonoBehaviour
             else
             {
                 tile.shouldBeAlive = true;
+                if (randTeam == 0) tile.teamToJoin = PvPController.Teams.P1;
+                else tile.teamToJoin = PvPController.Teams.P2;
             }
 
             tile.UpdateStatus();

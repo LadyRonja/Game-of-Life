@@ -16,8 +16,11 @@ public class GridClicker : MonoBehaviour
     public bool flipShapeOnAxisX;
     public bool flipShapeOnAxisY;
 
-    [Header("Teams")]
+    [Header("PVP")]
     public PvPController.Teams teamToDraw = PvPController.Teams.None;
+    public int maxUnitsToPlace = 3000;
+    public bool allowDrawOnRightSide = true;
+    public bool allowDrawOnLeftSide = true;
 
     private void Awake()
     {
@@ -50,6 +53,8 @@ public class GridClicker : MonoBehaviour
                 currentDrawMode = DrawMode.Free;
                 break;
         }
+
+        UIController.Instance.UpdateJumbotron();
     }
 
     public void OnClickDraw(Vector2Int startPos)
@@ -73,11 +78,17 @@ public class GridClicker : MonoBehaviour
                 currentDrawMode = DrawMode.Free;
                 break;
         }
+
+        UIController.Instance.UpdateJumbotron();
     }
 
     private void FreeDraw(Vector2Int startPos)
     {
-        GridTile tileToEdit = GameController.Instance.Container.StoredGrid[startPos.x, startPos.y];
+        GridTile[,] grid = GameController.Instance.Container.StoredGrid;
+        GridTile tileToEdit = grid[startPos.x, startPos.y];
+        if (!allowDrawOnRightSide && tileToEdit.myPos.x > grid.GetLength(0)/2) return;
+        if (!allowDrawOnLeftSide && tileToEdit.myPos.x < grid.GetLength(0)/2) return;
+
         tileToEdit.shouldBeAlive = !tileToEdit.shouldBeAlive;
         tileToEdit.teamToJoin = teamToDraw;
         tileToEdit.UpdateStatus();
@@ -92,6 +103,11 @@ public class GridClicker : MonoBehaviour
 
         if (startPos.x + shape.GetLength(0) > xMax - 1 || startPos.y + shape.GetLength(1) > yMax - 1) 
             return;
+
+        
+        if (!allowDrawOnRightSide && startPos.x + shape.GetLength(0) > grid.GetLength(0)/2) return;
+        if (!allowDrawOnLeftSide && startPos.x < grid.GetLength(0)/2) return;
+
 
         if (flipShapeOnAxisX) shape = ShapeFactory.FlipMatrixOnXAxis(shape);
         if (flipShapeOnAxisY) shape = ShapeFactory.FlipMatrixOnYAxis(shape);
@@ -112,7 +128,14 @@ public class GridClicker : MonoBehaviour
 
     private void ForceState(Vector2Int startPos, bool forceAlive)
     {
-        GameController.Instance.Container.StoredGrid[startPos.x, startPos.y].ForceState(forceAlive, teamToDraw);
+
+        GridTile[,] grid = GameController.Instance.Container.StoredGrid;
+        GridTile tileToEdit = grid[startPos.x, startPos.y];
+        if (!allowDrawOnRightSide && tileToEdit.myPos.x > grid.GetLength(0) / 2) return;
+        if (!allowDrawOnLeftSide && tileToEdit.myPos.x < grid.GetLength(0) / 2) return;
+
+        if(forceAlive) tileToEdit.ForceState(forceAlive, teamToDraw);
+        else tileToEdit.ForceState(forceAlive, PvPController.Teams.None);
     }
 
 }

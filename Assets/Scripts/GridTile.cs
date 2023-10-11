@@ -96,4 +96,9 @@ public class GridTile : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
         teamToJoin = forceTeam;
         ForceState(forceAlive);
     }
+
+    public void ForceGrayColor()
+    {
+        mySpriteRenderer.color = Color.gray;
+    }
 }
