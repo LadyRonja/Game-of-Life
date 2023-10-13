@@ -870,7 +870,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 66e37f72c8848e844a4f89f3121923cd, type: 3}
     - target: {fileID: 3780312850267477499, guid: 1885a72b6d3bf084f8904ced083b6292, type: 3}
       propertyPath: unitDiesAudio.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3780312850267477499, guid: 1885a72b6d3bf084f8904ced083b6292, type: 3}
       propertyPath: unitDiesAudio.Array.data[0]
@@ -911,7 +911,7 @@ PrefabInstance:
     - target: {fileID: 3780312850267477499, guid: 1885a72b6d3bf084f8904ced083b6292, type: 3}
       propertyPath: unitDiesAudio.Array.data[9]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8300000, guid: ca13f7959bfc27b46bda515971e2b24c, type: 3}
     - target: {fileID: 5005261484622002804, guid: 1885a72b6d3bf084f8904ced083b6292, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
